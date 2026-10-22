@@ -7,7 +7,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Local offline Chart.js with CDN fallback -->
+  <script src="chart.umd.min.js"></script>
+  <script>
+    if (typeof Chart === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"><\\/script>');
+    }
+  </script>
   <style>
     :root {
       --bg-base: #090d16;
@@ -355,9 +361,9 @@
         <p class="subtitle">UCI Online Retail Data Warehouse • 524,878 Sales Records • Reconciled 0.0000% Error</p>
       </div>
       <nav class="nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('tab-exec')">1. Executive Overview</button>
-        <button class="tab-btn" onclick="switchTab('tab-rfm')">2. Customer RFM Intel</button>
-        <button class="tab-btn" onclick="switchTab('tab-returns')">3. Product Returns</button>
+        <button class="tab-btn active" onclick="switchTab('tab-exec', this)">1. Executive Overview</button>
+        <button class="tab-btn" onclick="switchTab('tab-rfm', this)">2. Customer RFM Intel</button>
+        <button class="tab-btn" onclick="switchTab('tab-returns', this)">3. Product Returns</button>
       </nav>
     </header>
 
@@ -766,11 +772,20 @@
     });
 
     // Tab switcher
-    function switchTab(tabId) {
+    function switchTab(tabId, btn) {
       document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      event.target.classList.add('active');
+      const panel = document.getElementById(tabId);
+      if (panel) panel.classList.add('active');
+      if (btn) {
+        btn.classList.add('active');
+      } else if (typeof event !== 'undefined' && event && event.target) {
+        event.target.classList.add('active');
+      }
+      // Force trigger resize so Chart.js recalculates dimensions on newly visible tabs
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 50);
     }
   </script>
 </body>
