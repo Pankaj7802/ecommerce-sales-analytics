@@ -343,10 +343,160 @@
       gap: 12px;
     }
 
-    .db-status {
+    /* Pipeline Control Center Styles */
+    .pipeline-controls {
       display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .btn-action {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-card);
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
       align-items: center;
       gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--border-accent);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary-action {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      border-color: #6366f1;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    }
+
+    .btn-primary-action:hover {
+      background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+    }
+
+    .btn-success-action {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+
+    .btn-success-action:hover {
+      background: rgba(16, 185, 129, 0.25);
+    }
+
+    /* Pipeline Flow Stepper */
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .flow-step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .flow-step-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+    }
+
+    .flow-num {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent-indigo);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .flow-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .flow-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .flow-status-badge {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+    }
+
+    /* Terminal Console */
+    .terminal-card {
+      background: #050811;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      font-family: 'Consolas', 'Courier New', monospace;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .terminal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 12px;
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+
+    .terminal-body {
+      height: 240px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+
+    .terminal-body::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .terminal-body::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
     }
   </style>
 </head>
@@ -364,6 +514,7 @@
         <button class="tab-btn active" onclick="switchTab('tab-exec', this)">1. Executive Overview</button>
         <button class="tab-btn" onclick="switchTab('tab-rfm', this)">2. Customer RFM Intel</button>
         <button class="tab-btn" onclick="switchTab('tab-returns', this)">3. Product Returns</button>
+        <button class="tab-btn" onclick="switchTab('tab-pipeline', this)">4. Pipeline Control Center</button>
       </nav>
     </header>
 
@@ -502,6 +653,97 @@
             <canvas id="returnsImpactChart"></canvas>
           </div>
         </div>
+      </div>
+    </main>
+
+    <!-- TAB 4: PIPELINE CONTROL CENTER -->
+    <main id="tab-pipeline" class="dash-panel">
+      <!-- Action Controls -->
+      <div class="chart-card" style="margin-bottom: 20px;">
+        <div class="chart-header">
+          <div>
+            <div class="chart-title">Pipeline Orchestrator & Live Execution Controls</div>
+            <div class="chart-desc">Trigger, monitor, and audit pipeline stages directly from this dashboard</div>
+          </div>
+          <div id="pipelineStatusBadge" class="badge-live">System Ready (Idle)</div>
+        </div>
+        <div class="pipeline-controls">
+          <button class="btn-action btn-primary-action" onclick="runPipelineAction('full')">
+            <span>▶</span> Run Full Pipeline (7 Stages)
+          </button>
+          <button class="btn-action btn-success-action" onclick="runPipelineAction('validate')">
+            <span>⚡</span> Run Cross-Validation Audit
+          </button>
+          <button class="btn-action" onclick="runPipelineAction('test')">
+            <span>✓</span> Run Pytest Suite (16 Tests)
+          </button>
+          <button class="btn-action" onclick="runPipelineAction('diagnostic')">
+            <span>🔍</span> Run 36-Point Agent Diagnostic
+          </button>
+          <button class="btn-action" onclick="runPipelineAction('rfm')">
+            <span>🔄</span> Recompute RFM Segmentation
+          </button>
+        </div>
+      </div>
+
+      <!-- 7-Stage Visual Flow -->
+      <div class="flow-grid">
+        <div class="flow-step-card">
+          <div class="flow-num">Stage 1</div>
+          <div class="flow-title">Raw Ingestion</div>
+          <div class="flow-meta">Online Retail.xlsx<br>541,909 records<br>23.2 MB archive</div>
+          <span class="flow-status-badge">Loaded ✓</span>
+        </div>
+        <div class="flow-step-card">
+          <div class="flow-num">Stage 2</div>
+          <div class="flow-title">Data Cleaning</div>
+          <div class="flow-meta">clean_data.py<br>5,268 duplicates purged<br>524,878 eligible sales</div>
+          <span class="flow-status-badge">Conserved ✓</span>
+        </div>
+        <div class="flow-step-card">
+          <div class="flow-num">Stage 3</div>
+          <div class="flow-title">Quality Audit</div>
+          <div class="flow-meta">data_quality_report.py<br>12 metrics audited<br>0 type coercion errors</div>
+          <span class="flow-status-badge">Audited ✓</span>
+        </div>
+        <div class="flow-step-card">
+          <div class="flow-num">Stage 4</div>
+          <div class="flow-title">Warehouse Load</div>
+          <div class="flow-meta">MySQL 8 Star Schema<br>5 relational tables<br>117.3 MB fact_sales</div>
+          <span class="flow-status-badge">Populated ✓</span>
+        </div>
+        <div class="flow-step-card">
+          <div class="flow-num">Stage 5</div>
+          <div class="flow-title">Analytical SQL</div>
+          <div class="flow-meta">analysis_queries.sql<br>21 queries executed<br>CTEs & window functions</div>
+          <span class="flow-status-badge">Executed ✓</span>
+        </div>
+        <div class="flow-step-card">
+          <div class="flow-num">Stage 6</div>
+          <div class="flow-title">RFM Scoring</div>
+          <div class="flow-meta">customer_rfm.py<br>4,338 customer profiles<br>10 strategic cohorts</div>
+          <span class="flow-status-badge">Scored ✓</span>
+        </div>
+        <div class="flow-step-card">
+          <div class="flow-num">Stage 7</div>
+          <div class="flow-title">Validation & Test</div>
+          <div class="flow-meta">validate_metrics.py<br>0.0000% error rate<br>16/16 pytest passing</div>
+          <span class="flow-status-badge">100% Pass ✓</span>
+        </div>
+      </div>
+
+      <!-- Live Terminal Console -->
+      <div class="terminal-card">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="terminal-dot dot-red"></span>
+            <span class="terminal-dot dot-yellow"></span>
+            <span class="terminal-dot dot-green"></span>
+            <span style="margin-left: 8px; font-weight: 600; color: #f1f5f9;">Live Pipeline Execution Terminal</span>
+          </div>
+          <div style="font-size: 11px; color: #64748b;" id="logTimestamp">Auto-refreshing every 2s</div>
+        </div>
+        <div class="terminal-body" id="terminalOutput">Connecting to pipeline server...</div>
       </div>
     </main>
 
@@ -787,6 +1029,74 @@
         window.dispatchEvent(new Event('resize'));
       }, 50);
     }
+
+    // Pipeline Action Trigger
+    async function runPipelineAction(action) {
+      const badge = document.getElementById('pipelineStatusBadge');
+      if (badge) {
+        badge.innerText = `Executing: ${action}...`;
+        badge.style.color = '#f59e0b';
+        badge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+      }
+      try {
+        const res = await fetch('/api/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: action })
+        });
+        const data = await res.json();
+        if (res.status === 409) {
+          alert('A pipeline task is already actively running. Please wait for it to finish.');
+        } else {
+          pollPipelineLogs();
+        }
+      } catch (err) {
+        console.warn('Pipeline server API offline or unreachable:', err);
+      }
+    }
+
+    // Poll Pipeline Logs & Status
+    async function pollPipelineLogs() {
+      try {
+        const res = await fetch('/api/logs');
+        if (!res.ok) return;
+        const data = await res.json();
+        const term = document.getElementById('terminalOutput');
+        const badge = document.getElementById('pipelineStatusBadge');
+        const timeEl = document.getElementById('logTimestamp');
+
+        if (term && data.logs && data.logs.length > 0) {
+          term.innerText = data.logs.join('\n');
+          term.scrollTop = term.scrollHeight;
+        }
+
+        if (timeEl) {
+          timeEl.innerText = 'Last updated: ' + new Date().toLocaleTimeString();
+        }
+
+        if (badge) {
+          if (data.is_running) {
+            badge.innerText = `● Running ${data.current_action || 'pipeline'}...`;
+            badge.style.color = '#f59e0b';
+            badge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
+          } else {
+            badge.innerText = `● Ready (${data.last_run_status || 'Idle'})`;
+            badge.style.color = '#34d399';
+            badge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+          }
+        }
+      } catch (e) {
+        // Fallback when viewing purely static file without backend server
+        const term = document.getElementById('terminalOutput');
+        if (term && term.innerText.includes('Connecting')) {
+          term.innerText = '[Offline Mode] Run `python python/serve_dashboard.py` to enable live execution triggers from this dashboard.';
+        }
+      }
+    }
+
+    // Start polling on load
+    setInterval(pollPipelineLogs, 2000);
+    pollPipelineLogs();
   </script>
 </body>
 </html>
