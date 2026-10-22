@@ -15,15 +15,22 @@
     }
   </script>
   <style>
+    /* ========================================================= */
+    /* THEME DESIGN SYSTEM: DARK (DEFAULT) & LIGHT TOKENS       */
+    /* ========================================================= */
     :root {
       --bg-base: #060911;
-      --bg-surface: rgba(13, 19, 33, 0.82);
-      --bg-card: rgba(18, 26, 44, 0.75);
-      --bg-card-hover: rgba(28, 38, 62, 0.88);
-      --border-subtle: rgba(255, 255, 255, 0.07);
-      --border-accent: rgba(99, 102, 241, 0.4);
+      --bg-surface: rgba(13, 19, 33, 0.85);
+      --bg-card: rgba(18, 26, 44, 0.78);
+      --bg-card-hover: rgba(28, 38, 62, 0.9);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(99, 102, 241, 0.45);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
+      --text-table: #e2e8f0;
+      --table-th-bg: rgba(15, 23, 42, 0.96);
+      --table-tr-border: rgba(255, 255, 255, 0.04);
+      --table-hover: rgba(255, 255, 255, 0.035);
       --accent-indigo: #6366f1;
       --accent-cyan: #06b6d4;
       --accent-emerald: #10b981;
@@ -33,14 +40,38 @@
       --radius-xl: 18px;
       --radius-lg: 14px;
       --radius-md: 10px;
-      --shadow-card: 0 12px 36px -8px rgba(0, 0, 0, 0.5);
+      --shadow-card: 0 12px 36px -8px rgba(0, 0, 0, 0.55);
       --shadow-glow: 0 0 24px -4px rgba(99, 102, 241, 0.28);
+      --terminal-bg: #04060c;
+      --terminal-color: #cbd5e1;
+      --theme-toggle-bg: rgba(255, 255, 255, 0.08);
+    }
+
+    body.light-theme {
+      --bg-base: #f1f5f9;
+      --bg-surface: rgba(255, 255, 255, 0.92);
+      --bg-card: #ffffff;
+      --bg-card-hover: #f8fafc;
+      --border-subtle: #e2e8f0;
+      --border-accent: rgba(99, 102, 241, 0.6);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-table: #1e293b;
+      --table-th-bg: #f8fafc;
+      --table-tr-border: #f1f5f9;
+      --table-hover: #f8fafc;
+      --shadow-card: 0 10px 28px -6px rgba(0, 0, 0, 0.06), 0 4px 10px -2px rgba(0, 0, 0, 0.03);
+      --shadow-glow: 0 0 20px -2px rgba(99, 102, 241, 0.18);
+      --terminal-bg: #0f172a;
+      --terminal-color: #e2e8f0;
+      --theme-toggle-bg: rgba(15, 23, 42, 0.08);
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
     }
 
     body {
@@ -50,8 +81,8 @@
       line-height: 1.5;
       min-height: 100vh;
       background-image: 
-        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 45%),
-        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.1) 0%, transparent 45%);
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.1) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.08) 0%, transparent 45%);
       background-attachment: fixed;
     }
 
@@ -84,8 +115,8 @@
     }
 
     .brand-icon {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 12px;
       background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%);
       display: flex;
@@ -93,6 +124,7 @@
       justify-content: center;
       font-weight: 900;
       font-size: 20px;
+      color: #ffffff;
       box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
     }
 
@@ -100,7 +132,7 @@
       font-size: 20px;
       font-weight: 800;
       letter-spacing: -0.02em;
-      color: #ffffff;
+      color: var(--text-main);
       display: flex;
       align-items: center;
       gap: 10px;
@@ -111,10 +143,10 @@
       color: var(--text-muted);
     }
 
-    .header-pills {
+    .header-actions {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .status-pill {
@@ -145,7 +177,28 @@
       50% { opacity: 0.35; transform: scale(0.85); }
     }
 
-    /* Navigation Bar (All-In-One Unified Navigator) */
+    /* Theme Toggle Button */
+    .theme-toggle-btn {
+      background: var(--theme-toggle-bg);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 8px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle-btn:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-1px);
+    }
+
+    /* Navigation Bar */
     .nav-bar {
       display: flex;
       gap: 8px;
@@ -176,8 +229,8 @@
     }
 
     .nav-tab-btn:hover {
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      background: rgba(125, 125, 125, 0.08);
     }
 
     .nav-tab-btn.active {
@@ -237,7 +290,7 @@
       font-size: 25px;
       font-weight: 800;
       letter-spacing: -0.02em;
-      color: #ffffff;
+      color: var(--text-main);
       margin-bottom: 4px;
     }
 
@@ -249,8 +302,8 @@
       gap: 6px;
     }
 
-    .tag-green { color: #34d399; font-weight: 600; }
-    .tag-rose { color: #fb7185; font-weight: 600; }
+    .tag-green { color: #10b981; font-weight: 600; }
+    .tag-rose { color: #f43f5e; font-weight: 600; }
 
     /* Views / Panels */
     .view-panel {
@@ -310,7 +363,7 @@
     .card-title {
       font-size: 15px;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--text-main);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -332,7 +385,7 @@
       overflow-x: auto;
       max-height: 480px;
       border-radius: var(--radius-md);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
     }
 
     table {
@@ -344,7 +397,7 @@
 
     th {
       padding: 12px 16px;
-      background: rgba(15, 23, 42, 0.95);
+      background: var(--table-th-bg);
       color: var(--text-muted);
       font-weight: 700;
       text-transform: uppercase;
@@ -358,12 +411,12 @@
 
     td {
       padding: 12px 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: #e2e8f0;
+      border-bottom: 1px solid var(--table-tr-border);
+      color: var(--text-table);
     }
 
     tr:hover td {
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--table-hover);
     }
 
     /* Badges */
@@ -375,12 +428,12 @@
       font-weight: 700;
     }
 
-    .badge-champions { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-    .badge-loyal { background: rgba(6, 182, 212, 0.2); color: #38bdf8; }
-    .badge-cantlose { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-    .badge-atrisk { background: rgba(244, 63, 94, 0.2); color: #fb7185; }
-    .badge-lost { background: rgba(100, 116, 139, 0.25); color: #94a3b8; }
-    .badge-neutral { background: rgba(139, 92, 246, 0.2); color: #c084fc; }
+    .badge-champions { background: rgba(16, 185, 129, 0.18); color: #10b981; }
+    .badge-loyal { background: rgba(6, 182, 212, 0.18); color: #0284c7; }
+    .badge-cantlose { background: rgba(245, 158, 11, 0.18); color: #d97706; }
+    .badge-atrisk { background: rgba(244, 63, 94, 0.18); color: #e11d48; }
+    .badge-lost { background: rgba(100, 116, 139, 0.2); color: #64748b; }
+    .badge-neutral { background: rgba(139, 92, 246, 0.18); color: #7c3aed; }
 
     /* Pipeline Action Bar */
     .action-bar {
@@ -391,9 +444,9 @@
     }
 
     .btn {
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(125, 125, 125, 0.08);
       border: 1px solid var(--border-subtle);
-      color: #ffffff;
+      color: var(--text-main);
       padding: 10px 18px;
       border-radius: 10px;
       font-size: 13px;
@@ -406,7 +459,7 @@
     }
 
     .btn:hover {
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(125, 125, 125, 0.15);
       border-color: var(--border-accent);
       transform: translateY(-1px);
     }
@@ -414,6 +467,7 @@
     .btn-primary {
       background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
       border-color: #6366f1;
+      color: #ffffff;
       box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
     }
 
@@ -424,7 +478,7 @@
     .btn-emerald {
       background: rgba(16, 185, 129, 0.15);
       border-color: rgba(16, 185, 129, 0.4);
-      color: #34d399;
+      color: #10b981;
     }
 
     .btn-emerald:hover {
@@ -465,7 +519,7 @@
     .flow-stage-title {
       font-size: 13px;
       font-weight: 700;
-      color: #ffffff;
+      color: var(--text-main);
       margin-bottom: 4px;
     }
 
@@ -483,18 +537,18 @@
       padding: 2px 7px;
       border-radius: 4px;
       background: rgba(16, 185, 129, 0.18);
-      color: #34d399;
+      color: #10b981;
     }
 
     /* Console Terminal */
     .terminal-box {
-      background: #04060c;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--terminal-bg);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
       padding: 16px 20px;
       font-family: 'Consolas', 'Courier New', monospace;
       font-size: 12px;
-      color: #cbd5e1;
+      color: var(--terminal-color);
     }
 
     .terminal-top {
@@ -502,7 +556,7 @@
       justify-content: space-between;
       align-items: center;
       padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid var(--border-subtle);
       margin-bottom: 12px;
     }
 
@@ -511,14 +565,14 @@
       overflow-y: auto;
       white-space: pre-wrap;
       line-height: 1.6;
-      color: #cbd5e1;
+      color: var(--terminal-color);
     }
 
     /* Search Input */
     .search-input {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(125, 125, 125, 0.08);
       border: 1px solid var(--border-subtle);
-      color: #ffffff;
+      color: var(--text-main);
       padding: 7px 12px;
       border-radius: 8px;
       font-size: 12px;
@@ -528,7 +582,7 @@
 
     .search-input:focus {
       border-color: var(--accent-indigo);
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(125, 125, 125, 0.14);
     }
 
     /* Footer */
@@ -552,13 +606,16 @@
     <!-- Top Command Header -->
     <header class="top-header">
       <div class="brand-group">
-        <div class="brand-icon">E</div>
+        <div class="brand-icon">₹</div>
         <div class="brand-text">
           <h1>E-Commerce Intelligence Platform</h1>
           <p>UCI Online Retail Data Warehouse • Star Schema MySQL 8 • Zero Reconciled Error</p>
         </div>
       </div>
-      <div class="header-pills">
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleDashboardTheme()">
+          <span>☀️</span> Light Mode
+        </button>
         <div id="dbStatusPill" class="status-pill">MySQL 8: Connected (Port 3306)</div>
         <div id="pipelineStatusPill" class="status-pill" style="background: rgba(99, 102, 241, 0.12); color: #818cf8; border-color: rgba(99, 102, 241, 0.3);">
           Pipeline: Idle / Ready
@@ -588,11 +645,11 @@
       </button>
     </nav>
 
-    <!-- Global Key Metric Cards -->
+    <!-- Global Key Metric Cards (Rupees Currency) -->
     <section class="kpi-strip">
       <div class="kpi-card" style="--accent-color: var(--accent-indigo);">
         <div class="kpi-title">Gross Revenue</div>
-        <div class="kpi-num">$10,642,110.80</div>
+        <div class="kpi-num">₹10,642,110.80</div>
         <div class="kpi-footnote"><span class="tag-green">✓ 0.0000% Error</span> vs MySQL Table</div>
       </div>
       <div class="kpi-card" style="--accent-color: var(--accent-cyan);">
@@ -607,12 +664,12 @@
       </div>
       <div class="kpi-card" style="--accent-color: var(--accent-amber);">
         <div class="kpi-title">Average Order Value (AOV)</div>
-        <div class="kpi-num">$533.17</div>
+        <div class="kpi-num">₹533.17</div>
         <div class="kpi-footnote">Mean Basket Size Across 38 Markets</div>
       </div>
       <div class="kpi-card" style="--accent-color: var(--accent-rose);">
         <div class="kpi-title">Returns & Cancellations</div>
-        <div class="kpi-num">-$916,103.85</div>
+        <div class="kpi-num">-₹916,103.85</div>
         <div class="kpi-footnote"><span class="tag-rose">11,763</span> Cancellation Lines (8.6%)</div>
       </div>
     </section>
@@ -626,7 +683,7 @@
           <div class="card-header">
             <div>
               <div class="card-title">Monthly Revenue Trajectory & Order Volume</div>
-              <div class="card-subtitle">13-Month Time Series highlighting November 2011 Peak ($1.50M)</div>
+              <div class="card-subtitle">13-Month Time Series highlighting November 2011 Peak (₹1.50M)</div>
             </div>
           </div>
           <div class="chart-box">
@@ -638,7 +695,7 @@
           <div class="card-header">
             <div>
               <div class="card-title">Top Geographic Markets</div>
-              <div class="card-subtitle">United Kingdom accounts for 84.6% of gross turnover</div>
+              <div class="card-subtitle">United Kingdom accounts for 84.6% of gross turnover (₹9.00M)</div>
             </div>
           </div>
           <div class="chart-box">
@@ -657,7 +714,7 @@
           <div class="card-header">
             <div>
               <div class="card-title">RFM Pareto Revenue Concentration</div>
-              <div class="card-subtitle">Champions & Loyalists generate 80.64% ($7.17M) of identified revenue</div>
+              <div class="card-subtitle">Champions & Loyalists generate 80.64% (₹7.17M) of identified revenue</div>
             </div>
           </div>
           <div class="chart-box">
@@ -692,8 +749,8 @@
               <tr>
                 <th>Segment Name</th>
                 <th>Customer Count</th>
-                <th>Total Revenue</th>
-                <th>Average Spend</th>
+                <th>Total Revenue (₹)</th>
+                <th>Average Spend (₹)</th>
                 <th>Avg Orders</th>
                 <th>Avg Recency</th>
                 <th>Strategic Business Action</th>
@@ -726,7 +783,7 @@
           <div class="card-header">
             <div>
               <div class="card-title">Cancellation & Return Reasons</div>
-              <div class="card-subtitle">11,763 non-sale records evaluated</div>
+              <div class="card-subtitle">11,763 non-sale records evaluated (-₹916K total value)</div>
             </div>
           </div>
           <div class="chart-box">
@@ -781,7 +838,7 @@
         <div class="flow-card">
           <div class="flow-stage-tag">Stage 2</div>
           <div class="flow-stage-title">Data Cleaning</div>
-          <div class="flow-stage-desc">clean_data.py<br>5,268 duplicates removed<br>524,878 sales records</div>
+          <div class="flow-stage-desc">clean_data.py<br>5,268 duplicates removed<br>524,878 sales (₹10.64M)</div>
           <span class="flow-pass-badge">Conserved ✓</span>
         </div>
         <div class="flow-card">
@@ -823,9 +880,9 @@
             <span style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
             <span style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b; display: inline-block;"></span>
             <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
-            <span style="margin-left: 8px; font-weight: 700; color: #f8fafc;">Live Pipeline Execution Console</span>
+            <span style="margin-left: 8px; font-weight: 700; color: var(--text-main);">Live Pipeline Execution Console</span>
           </div>
-          <div style="font-size: 11px; color: #64748b;" id="logTimestamp">Auto-refreshing every 2s</div>
+          <div style="font-size: 11px; color: var(--text-muted);" id="logTimestamp">Auto-refreshing every 2s</div>
         </div>
         <div class="terminal-log-stream" id="terminalOutput">Connecting to pipeline server (http://localhost:8000)...</div>
       </div>
@@ -856,7 +913,7 @@
               <tr>
                 <td><strong>fact_sales</strong></td>
                 <td>Fact Table</td>
-                <td><strong style="color: #34d399;">524,878</strong></td>
+                <td><strong style="color: #10b981;">524,878</strong></td>
                 <td>sale_id</td>
                 <td>dim_date, dim_products, dim_customers</td>
                 <td>117.30 MB</td>
@@ -864,7 +921,7 @@
               <tr>
                 <td><strong>fact_returns</strong></td>
                 <td>Fact Table</td>
-                <td><strong style="color: #fb7185;">11,763</strong></td>
+                <td><strong style="color: #f43f5e;">11,763</strong></td>
                 <td>return_id</td>
                 <td>dim_date, dim_products, dim_customers</td>
                 <td>3.64 MB</td>
@@ -926,9 +983,9 @@
             <tbody>
               <tr>
                 <td><strong>Total Gross Revenue</strong></td>
-                <td>$10,642,110.80</td>
-                <td>$10,642,110.80</td>
-                <td>$0.00</td>
+                <td>₹10,642,110.80</td>
+                <td>₹10,642,110.80</td>
+                <td>₹0.00</td>
                 <td>0.0000%</td>
                 <td><span class="badge badge-champions">PASS ✓</span></td>
               </tr>
@@ -958,9 +1015,9 @@
               </tr>
               <tr>
                 <td><strong>Average Order Value (AOV)</strong></td>
-                <td>$533.17</td>
-                <td>$533.17</td>
-                <td>$0.00</td>
+                <td>₹533.17</td>
+                <td>₹533.17</td>
+                <td>₹0.00</td>
                 <td>0.0000%</td>
                 <td><span class="badge badge-champions">PASS ✓</span></td>
               </tr>
@@ -987,15 +1044,15 @@
           <div class="card-title">MCA Mini-Project Deliverables & Repository Map</div>
           <div class="card-subtitle">Complete enterprise analytics implementation documentation</div>
         </div>
-        <div style="line-height: 1.8; font-size: 13px; color: #cbd5e1;">
+        <div style="line-height: 1.8; font-size: 13px; color: var(--text-table);">
           <p style="margin-bottom: 12px;">This unified platform embodies an end-to-end data pipeline built for high reproducibility, strict referential integrity, and business decision-making:</p>
           <ul style="margin-left: 20px; margin-bottom: 16px;">
-            <li><strong>Master Academic Report</strong>: Full 24-section documentation at <a href="../report/project_report.md" style="color: #818cf8; text-decoration: underline;">report/project_report.md</a></li>
-            <li><strong>Tableau Build Blueprint</strong>: Comprehensive guide with 15 calculated fields at <a href="dashboard_build_guide.md" style="color: #818cf8; text-decoration: underline;">tableau/dashboard_build_guide.md</a></li>
-            <li><strong>Pytest HTML Test Report</strong>: Interactive test suite report at <a href="../tests/test_report.html" style="color: #818cf8; text-decoration: underline;">tests/test_report.html</a></li>
+            <li><strong>Master Academic Report</strong>: Full 24-section documentation at <a href="../report/project_report.md" style="color: var(--accent-indigo); text-decoration: underline;">report/project_report.md</a></li>
+            <li><strong>Tableau Build Blueprint</strong>: Comprehensive guide with 15 calculated fields at <a href="dashboard_build_guide.md" style="color: var(--accent-indigo); text-decoration: underline;">tableau/dashboard_build_guide.md</a></li>
+            <li><strong>Pytest HTML Test Report</strong>: Interactive test suite report at <a href="../tests/test_report.html" style="color: var(--accent-indigo); text-decoration: underline;">tests/test_report.html</a></li>
             <li><strong>Tableau Data Source Files</strong>:
-              <a href="ecommerce_analytics_mysql.tds" style="color: #818cf8; text-decoration: underline;">ecommerce_analytics_mysql.tds</a> (Live MySQL) | 
-              <a href="ecommerce_analytics_csv.tds" style="color: #818cf8; text-decoration: underline;">ecommerce_analytics_csv.tds</a> (CSV Fallback)
+              <a href="ecommerce_analytics_mysql.tds" style="color: var(--accent-indigo); text-decoration: underline;">ecommerce_analytics_mysql.tds</a> (Live MySQL) | 
+              <a href="ecommerce_analytics_csv.tds" style="color: var(--accent-indigo); text-decoration: underline;">ecommerce_analytics_csv.tds</a> (CSV Fallback)
             </li>
           </ul>
         </div>
@@ -1005,15 +1062,15 @@
     <!-- Global Footer -->
     <footer>
       <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="color: #34d399;">●</span>
+        <span style="color: #10b981;">●</span>
         <span>Connected to Backend Server: <strong>http://localhost:8000</strong></span>
       </div>
-      <div>Unified Dashboard Version 2.0 • Antigravity Enterprise Engine</div>
+      <div>Unified Dashboard Version 2.1 (Theme Toggle & INR ₹ Enabled) • Antigravity Enterprise Engine</div>
     </footer>
   </div>
 
   <script>
-    // Live dataset metrics extracted directly from MySQL 8 warehouse
+    // Live dataset metrics extracted directly from MySQL 8 warehouse (in INR ₹)
     const liveData = {
       monthly: [
         {"ym": "Dec 2010", "rev": 821452.73, "orders": 1559},
@@ -1067,15 +1124,17 @@
     Chart.defaults.color = '#94a3b8';
     Chart.defaults.font.family = "'Inter', sans-serif";
 
+    const allCharts = {};
+
     // 1. Monthly Trajectory
-    new Chart(document.getElementById('monthlyTrendChart').getContext('2d'), {
+    allCharts.monthly = new Chart(document.getElementById('monthlyTrendChart').getContext('2d'), {
       type: 'bar',
       data: {
         labels: liveData.monthly.map(d => d.ym),
         datasets: [
           {
             type: 'line',
-            label: 'Gross Revenue ($)',
+            label: 'Gross Revenue (₹)',
             data: liveData.monthly.map(d => d.rev),
             borderColor: '#6366f1',
             backgroundColor: 'rgba(99, 102, 241, 0.15)',
@@ -1098,12 +1157,21 @@
         responsive: true,
         maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: c => c.datasetIndex === 0 
+                ? ' Revenue: ₹' + Number(c.raw).toLocaleString() 
+                : ' Orders: ' + Number(c.raw).toLocaleString()
+            }
+          }
+        },
         scales: {
-          x: { grid: { color: 'rgba(255, 255, 255, 0.05)' } },
+          x: { grid: { color: 'rgba(125, 125, 125, 0.1)' } },
           y: {
             type: 'linear', position: 'left',
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'k' }
+            grid: { color: 'rgba(125, 125, 125, 0.1)' },
+            ticks: { callback: v => '₹' + (v / 1000).toFixed(0) + 'k' }
           },
           y1: {
             type: 'linear', position: 'right',
@@ -1115,12 +1183,12 @@
     });
 
     // 2. Geographic Distribution
-    new Chart(document.getElementById('countryChart').getContext('2d'), {
+    allCharts.country = new Chart(document.getElementById('countryChart').getContext('2d'), {
       type: 'bar',
       data: {
         labels: liveData.countries.map(c => c.name),
         datasets: [{
-          label: 'Revenue ($)',
+          label: 'Revenue (₹)',
           data: liveData.countries.map(c => c.rev),
           backgroundColor: ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b'],
           borderRadius: 6
@@ -1130,11 +1198,14 @@
         indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: c => ' Revenue: ₹' + Number(c.raw).toLocaleString() } }
+        },
         scales: {
           x: {
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            ticks: { callback: v => '$' + (v / 1000000).toFixed(1) + 'M' }
+            grid: { color: 'rgba(125, 125, 125, 0.1)' },
+            ticks: { callback: v => '₹' + (v / 1000000).toFixed(1) + 'M' }
           },
           y: { grid: { display: false } }
         }
@@ -1142,7 +1213,7 @@
     });
 
     // 3. RFM Revenue Doughnut
-    new Chart(document.getElementById('rfmRevenueChart').getContext('2d'), {
+    allCharts.rfmRev = new Chart(document.getElementById('rfmRevenueChart').getContext('2d'), {
       type: 'doughnut',
       data: {
         labels: liveData.rfm.map(r => r.seg),
@@ -1150,18 +1221,21 @@
           data: liveData.rfm.map(r => r.rev),
           backgroundColor: ['#10b981', '#06b6d4', '#f59e0b', '#f43f5e', '#64748b', '#8b5cf6', '#3b82f6', '#ec4899', '#a855f7', '#14b8a6'],
           borderWidth: 2,
-          borderColor: '#060911'
+          borderColor: 'rgba(0,0,0,0.1)'
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11 } } } }
+        plugins: {
+          legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11 } } },
+          tooltip: { callbacks: { label: c => ' ' + c.label + ': ₹' + Number(c.raw).toLocaleString() } }
+        }
       }
     });
 
     // 4. RFM Customer Count
-    new Chart(document.getElementById('rfmCustChart').getContext('2d'), {
+    allCharts.rfmCust = new Chart(document.getElementById('rfmCustChart').getContext('2d'), {
       type: 'bar',
       data: {
         labels: liveData.rfm.map(r => r.seg),
@@ -1177,18 +1251,18 @@
         plugins: { legend: { display: false } },
         scales: {
           x: { grid: { display: false }, ticks: { font: { size: 10 } } },
-          y: { grid: { color: 'rgba(255, 255, 255, 0.05)' } }
+          y: { grid: { color: 'rgba(125, 125, 125, 0.1)' } }
         }
       }
     });
 
     // 5. Top Products
-    new Chart(document.getElementById('topProductsChart').getContext('2d'), {
+    allCharts.topProducts = new Chart(document.getElementById('topProductsChart').getContext('2d'), {
       type: 'bar',
       data: {
         labels: liveData.topProducts.map(p => p.name),
         datasets: [{
-          label: 'Revenue ($)',
+          label: 'Revenue (₹)',
           data: liveData.topProducts.map(p => p.rev),
           backgroundColor: '#3b82f6',
           borderRadius: 6
@@ -1198,11 +1272,14 @@
         indexAxis: 'y',
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: c => ' Revenue: ₹' + Number(c.raw).toLocaleString() } }
+        },
         scales: {
           x: {
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'k' }
+            grid: { color: 'rgba(125, 125, 125, 0.1)' },
+            ticks: { callback: v => '₹' + (v / 1000).toFixed(0) + 'k' }
           },
           y: { grid: { display: false } }
         }
@@ -1210,7 +1287,7 @@
     });
 
     // 6. Returns Category
-    new Chart(document.getElementById('returnsCategoryChart').getContext('2d'), {
+    allCharts.returnsCategory = new Chart(document.getElementById('returnsCategoryChart').getContext('2d'), {
       type: 'doughnut',
       data: {
         labels: ['Formal Cancellations (C_Invoice)', 'Unbilled Anomalies', 'Write-Offs / Loss'],
@@ -1218,28 +1295,31 @@
           data: [893933.91, 14210.45, 7959.49],
           backgroundColor: ['#f43f5e', '#f59e0b', '#64748b'],
           borderWidth: 2,
-          borderColor: '#060911'
+          borderColor: 'rgba(0,0,0,0.1)'
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom' } }
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: { callbacks: { label: c => ' Lost: ₹' + Number(c.raw).toLocaleString() } }
+        }
       }
     });
 
-    // Populate RFM Table
+    // Populate RFM Table in Rupees
     function renderRfmTable(data) {
       const tbody = document.getElementById('rfmTableBody');
       tbody.innerHTML = data.map(r => `
         <tr>
           <td><span class="badge ${r.class}">${r.seg}</span></td>
           <td><strong>${r.custs.toLocaleString()}</strong></td>
-          <td><strong>$${r.rev.toLocaleString()}</strong></td>
-          <td>$${r.avg_spend.toLocaleString()}</td>
+          <td><strong>₹${r.rev.toLocaleString()}</strong></td>
+          <td>₹${r.avg_spend.toLocaleString()}</td>
           <td>${r.avg_orders} orders</td>
           <td>${r.avg_rec} days</td>
-          <td style="color: #94a3b8; font-size: 12px;">${r.action}</td>
+          <td style="color: var(--text-muted); font-size: 12px;">${r.action}</td>
         </tr>
       `).join('');
     }
@@ -1263,6 +1343,45 @@
       if (btn) btn.classList.add('active');
       setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 60);
     }
+
+    // Dark & Light Mode Theme Toggle
+    function toggleDashboardTheme() {
+      document.body.classList.toggle('light-theme');
+      const isLight = document.body.classList.contains('light-theme');
+      localStorage.setItem('dashboard_theme', isLight ? 'light' : 'dark');
+
+      const btn = document.getElementById('themeToggleBtn');
+      if (btn) {
+        btn.innerHTML = isLight ? '<span>🌙</span> Dark Mode' : '<span>☀️</span> Light Mode';
+      }
+
+      // Update Chart.js color palette for active theme
+      const textColor = isLight ? '#475569' : '#94a3b8';
+      const gridColor = isLight ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.06)';
+      
+      Chart.defaults.color = textColor;
+      Object.values(allCharts).forEach(chart => {
+        if (chart.options.scales) {
+          if (chart.options.scales.x && chart.options.scales.x.grid) {
+            chart.options.scales.x.grid.color = gridColor;
+          }
+          if (chart.options.scales.y && chart.options.scales.y.grid) {
+            chart.options.scales.y.grid.color = gridColor;
+          }
+        }
+        chart.update();
+      });
+    }
+
+    // Initialize Theme from localStorage
+    (function initTheme() {
+      const savedTheme = localStorage.getItem('dashboard_theme');
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        const btn = document.getElementById('themeToggleBtn');
+        if (btn) btn.innerHTML = '<span>🌙</span> Dark Mode';
+      }
+    })();
 
     // Trigger Pipeline Execution via API
     async function triggerPipelineRun(action) {
@@ -1314,8 +1433,8 @@
           if (topPill) { topPill.innerText = txt; topPill.style.color = '#f59e0b'; }
         } else {
           const txt = `● Status: ${data.last_run_status || 'Idle / Ready'}`;
-          if (badge) { badge.innerText = txt; badge.style.color = '#34d399'; }
-          if (topPill) { topPill.innerText = txt; topPill.style.color = '#34d399'; }
+          if (badge) { badge.innerText = txt; badge.style.color = '#10b981'; }
+          if (topPill) { topPill.innerText = txt; topPill.style.color = '#10b981'; }
         }
       } catch (e) {
         const term = document.getElementById('terminalOutput');
